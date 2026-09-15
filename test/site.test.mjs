@@ -29,6 +29,7 @@ test("production output includes publishing essentials", () => {
     "robots.txt",
     "posts/index.html",
     "authors/denis-roio/index.html",
+    "authors/jaromil/index.html",
     "tags/privacy/index.html",
   ]) {
     assert.equal(existsSync(new URL(path, publicDir)), true, `${path} should exist`);
@@ -63,25 +64,45 @@ test("every generated internal link resolves inside the artifact", () => {
 });
 
 test("posts expose authors, tags, social metadata, and responsive media", () => {
-  const article = read("2026/09/example-documenting-an-open-protocol/index.html");
-  assert.match(article, /Denis Roio/);
-  assert.match(article, /\/blog\/authors\/denis-roio\//);
+  const article = read("2026/09/introducing-bitcoin-roots/index.html");
+  assert.match(article, /Jaromil/);
+  assert.match(article, /\/blog\/authors\/jaromil\//);
   assert.match(article, /\/blog\/tags\/bitcoin\//);
   assert.match(article, /property="?og:type"? content="?article"?/);
   assert.match(article, /property="?article:published_time"?/);
   assert.match(article, /<img[^>]+srcset=/);
 
-  const author = read("authors/denis-roio/index.html");
-  assert.match(author, /Articles by Denis Roio/);
-  assert.match(author, /Example: documenting an open protocol/);
+  const author = read("authors/jaromil/index.html");
+  assert.match(author, /Articles by Jaromil/);
+  assert.match(author, /Introducing Bitcoin Roots/);
+});
+
+test("Bitcoin Roots announcement preserves editorial structure and figures", () => {
+  const article = read("2026/09/introducing-bitcoin-roots/index.html");
+  const stylesheetPath = article.match(/href=(\/blog\/generated\/blog\.min\.[a-f0-9]+\.css)/)?.[1];
+
+  assert.match(article, /<h1[^>]*>Introducing Bitcoin Roots<\/h1>/);
+  assert.match(article, /By<\/span><a href=\/blog\/authors\/jaromil\/>Jaromil<\/a>/);
+  assert.match(article, /<h2 id=filtering-is-a-local-decision>Filtering is a local decision<\/h2>/);
+  assert.equal((article.match(/<blockquote class=pullquote>/g) ?? []).length, 2);
+  assert.match(article, /<blockquote class=pullquote><p>Knots has served me well/);
+  assert.match(article, /<blockquote class=pullquote><p>This is where I stop following Knots\./);
+  assert.equal((article.match(/<figure class=wide>/g) ?? []).length, 4);
+  assert.equal((article.match(/<figcaption>/g) ?? []).length, 4);
+  assert.match(article, /alt="Transaction TX is refused by the local relay and mempool policy\./);
+  assert.match(article, /srcset="\/blog\/2026\/09\/introducing-bitcoin-roots\/figure-filtering-local-policy_hu_/);
+  assert.ok(stylesheetPath, "the article should link its compiled stylesheet");
+  const stylesheet = read(stylesheetPath.replace(/^\/blog\//, ""));
+  assert.match(stylesheet, /\.prose blockquote\.pullquote\{[^}]*font-style:italic;[^}]*font-weight:500/);
 });
 
 test("feeds and sitemap contain canonical publication URLs", () => {
   const feed = read("index.xml");
   const sitemap = read("sitemap.xml");
-  assert.equal((feed.match(/<item>/g) ?? []).length, 3);
+  assert.equal((feed.match(/<item>/g) ?? []).length, 4);
+  assert.match(feed, /https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\//);
   assert.match(feed, /https:\/\/plan-b\.foundation\/blog\/2026\/09\/example-documenting-an-open-protocol\//);
-  assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/authors\/denis-roio\//);
+  assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/authors\/jaromil\//);
   assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/tags\/privacy\//);
 });
 
