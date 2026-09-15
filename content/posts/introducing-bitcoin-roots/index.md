@@ -9,7 +9,7 @@ tags:
   - bitcoin-core
   - node-policy
   - consensus
-summary: "Reviewable, Bitcoin Core based full-node patch that preserves selected operator controls."
+summary: "Bitcoin Core based full-node application and reviewable patch that preserves selected operator controls. For and by Knots' orphans."
 draft: false
 ---
 
@@ -96,7 +96,7 @@ Binary releases also deserve attention. Bitcoin Core’s reproducible builds pro
 
 My work on Dyne.org software and Devuan GNU/Linux has taught me that useful software requires sustained work long after the initial idea. Bitcoin Roots is just beginning. I am not claiming it is the best full-node software available: the code must earn your trust through review and use. I will work alongside Giacomo Zucco, S₿AM and the people at Lugano’s Plan ₿ Foundation to keep Roots minimal, reliable and interoperable for anyone who wants to run a local Bitcoin node, including myself.
 
-The [source is open](https://github.com/LuganoPlanB/bitcoin-roots). If you run a node, tell us what makes it difficult to configure or maintain. If you review code, examine what Roots changes in Bitcoin Core, especially where local policy meets consensus validation. I welcome criticism that helps us get the software right.
+The [source is open](https://github.com/LuganoPlanB/bitcoin-roots) and the first [downloads are released](https://github.com/LuganoPlanB/bitcoin-roots/releases) starting with two versions based on Bitcoin Core 29.x. The 30 and 31 based patches will come soon enough. If you run a node, tell us what makes it difficult to configure or maintain. If you review code, examine what Roots changes in Bitcoin Core, especially where local policy meets consensus validation. I welcome criticism that helps us get the software right.
 
 And come and say hello at the [Plan ₿ Forum in Lugano](https://planb.lugano.ch/planb-forum/) on 23 and 24 October 2026. I will be glad to discuss Bitcoin Roots and the other developments taking place here. Early-bird tickets may still be available, so have a look at the [ticket page](https://planb.lugano.ch/planb-forum/#tickets). Bring your questions and disagreements. I look forward to talking in person.
 
