@@ -9,9 +9,12 @@ tags:
   - bitcoin-core
   - node-policy
   - consensus
-summary: "Bitcoin Roots: a reviewable, Core-compatible full-node project that preserves selected operator controls."
+summary: "Reviewable, Bitcoin Core based full-node patch that preserves selected operator controls."
 draft: false
 ---
+
+![Bitcoin Roots logo](bitcoinroots-logo.svg)
+{.bitcoin-roots-logo}
 
 I am introducing [Bitcoin Roots](https://plan-b.foundation/bitcoin-roots/), a full-node project I’ll maintain as part of my work as Scientific Director for the Plan ₿ Foundation in Lugano. With this project I intend to carry forward selected conservative policy and operator controls from Bitcoin Knots, with a commitment to produce a versioned patch applicable to Bitcoin Core. Bitcoin Roots will be a built application derived from such an inspectable patch applied on every major release of Bitcoin Core and will always be compatible with its consensus rules.
 

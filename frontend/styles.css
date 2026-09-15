@@ -678,6 +678,15 @@ button {
   transform: translateX(-50%);
 }
 
+.prose .bitcoin-roots-logo {
+  margin: clamp(2.5rem, 6vw, 4rem) auto;
+}
+
+.prose .bitcoin-roots-logo img {
+  width: clamp(6rem, 16vw, 9rem);
+  margin: 0 auto;
+}
+
 .prose :where(code, kbd) {
   font-family: var(--pb-font-mono);
   font-size: 0.88em;

@@ -91,6 +91,10 @@ test("Bitcoin Roots announcement preserves editorial structure and figures", () 
   assert.equal((article.match(/<figcaption>/g) ?? []).length, 4);
   assert.match(article, /alt="Transaction TX is refused by the local relay and mempool policy\./);
   assert.match(article, /srcset="\/blog\/2026\/09\/introducing-bitcoin-roots\/figure-filtering-local-policy_hu_/);
+  assert.match(article, /class=bitcoin-roots-logo><img src=bitcoinroots-logo\.svg alt="Bitcoin Roots logo">/);
+  assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/bitcoinroots-logo.svg", publicDir)), true);
+  assert.match(read("authors/jaromil/index.html"), /<img src=\/blog\/authors\/jaromil\/avatar\.jpg/);
+  assert.equal(existsSync(new URL("authors/jaromil/avatar.jpg", publicDir)), true);
   assert.ok(stylesheetPath, "the article should link its compiled stylesheet");
   const stylesheet = read(stylesheetPath.replace(/^\/blog\//, ""));
   assert.match(stylesheet, /\.prose blockquote\.pullquote\{[^}]*font-style:italic;[^}]*font-weight:500/);
