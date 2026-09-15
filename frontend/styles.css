@@ -1002,7 +1002,8 @@ button {
   }
 
   .featured-post__media {
-    min-height: 20rem;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
   }
 
   .term-cloud,
@@ -1056,7 +1057,7 @@ button {
   }
 
   .featured-post__media {
-    min-height: 14rem;
+    min-height: 0;
   }
 
   .featured-post__body {

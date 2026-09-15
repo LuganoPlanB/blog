@@ -63,7 +63,10 @@ test("every generated internal link resolves inside the artifact", () => {
 });
 
 test("posts expose authors, tags, social metadata, and responsive media", () => {
+  const home = read("index.html");
   const article = read("2026/09/introducing-bitcoin-roots/index.html");
+  assert.match(home, /featured-post__media[^>]*><img src=\/blog\/2026\/09\/introducing-bitcoin-roots\/featured-cover_hu_[^ >]+\.webp/);
+  assert.doesNotMatch(home, /cover-placeholder\.svg|Example cover|Replace before publication/);
   assert.match(article, /Jaromil/);
   assert.match(article, /\/blog\/authors\/jaromil\//);
   assert.match(article, /\/blog\/tags\/bitcoin\//);
@@ -76,6 +79,7 @@ test("posts expose authors, tags, social metadata, and responsive media", () => 
   assert.match(article, /name="?twitter:image"? content="?https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"?/);
   assert.match(article, /<img[^>]+srcset=/);
   assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/social-card.png", publicDir)), true);
+  assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/featured-cover.png", publicDir)), true);
 
   const author = read("authors/jaromil/index.html");
   assert.match(author, /Articles by Jaromil/);

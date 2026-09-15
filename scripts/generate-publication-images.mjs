@@ -27,7 +27,7 @@ const provenance = `<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/">
       <dc:format>image/png</dc:format>
-      <dc:source>scripts/generate-social-cards.mjs</dc:source>
+      <dc:source>scripts/generate-publication-images.mjs</dc:source>
       <dc:description>Generated from the post and author front matter, author avatar, Plan B identity asset, and configured article bundle image.</dc:description>
     </rdf:Description>
   </rdf:RDF>
@@ -74,6 +74,16 @@ async function existing(path) {
   }
 }
 
+async function writeGeneratedImage(outputPath, buffer) {
+  const previous = await existing(outputPath) ? await readFile(outputPath) : null;
+  const changed = !previous || !previous.equals(buffer);
+  if (changed) {
+    await mkdir(resolve(outputPath, ".."), { recursive: true });
+    await writeFile(outputPath, buffer);
+  }
+  return { outputPath, changed };
+}
+
 function wrapTitle(title) {
   const words = String(title).trim().split(/\s+/);
   const maxCharacters = title.length > 54 ? 19 : 23;
@@ -112,9 +122,18 @@ async function postFiles() {
 async function generateCard(postPath) {
   const postDir = resolve(postPath, "..");
   const post = frontMatter(await readFile(postPath, "utf8"), postPath);
-  if (!post.social_card) return null;
-
   const card = typeof post.social_card === "object" ? post.social_card : {};
+  const featuredCard = typeof post.featured_card === "object" ? post.featured_card : {};
+  const bundleEntries = await readdir(postDir, { withFileTypes: true });
+  const sourceImages = bundleEntries.filter((entry) => (
+    entry.isFile()
+    && /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(entry.name)
+    && !/^(?:social-card|featured-cover)\.png$/i.test(entry.name)
+  ));
+  const configuredSource = card.image || featuredCard.image || post.cover;
+  const automaticSource = sourceImages.length === 1 ? sourceImages[0].name : null;
+  if (!configuredSource && !automaticSource) return null;
+
   const outputName = post.social_image || "social-card.png";
   if (outputName !== outputName.split(/[\\/]/).at(-1)) {
     throw new Error(`social_image in ${relative(root, postPath)} must be a bundle filename`);
@@ -127,10 +146,7 @@ async function generateCard(postPath) {
   const displayName = author.display_name || author.title || author.name || authorSlug;
   const authorDetail = card.author_detail || author.role || author.organisation || "";
 
-  const featurePath = join(postDir, card.image || post.cover || "");
-  if (!card.image && !post.cover) {
-    throw new Error(`${relative(root, postPath)} social_card needs an image`);
-  }
+  const featurePath = join(postDir, configuredSource || automaticSource);
   if (!(await existing(featurePath))) {
     throw new Error(`Social-card image not found: ${relative(root, featurePath)}`);
   }
@@ -198,29 +214,100 @@ async function generateCard(postPath) {
       exif: {
         IFD0: {
           ImageDescription: "Generated from article and author data with Plan B identity assets.",
-          Software: "scripts/generate-social-cards.mjs",
+          Software: "scripts/generate-publication-images.mjs",
         },
       },
     })
     .png({ compressionLevel: 9 })
     .toBuffer();
-  const previous = await existing(outputPath) ? await readFile(outputPath) : null;
-  const changed = !previous || !previous.equals(png);
-  if (changed) {
-    await mkdir(postDir, { recursive: true });
-    await writeFile(outputPath, png);
+
+  const results = [await writeGeneratedImage(outputPath, png)];
+  if (!post.cover) {
+    const featuredOutputName = post.featured_image || "featured-cover.png";
+    if (featuredOutputName !== featuredOutputName.split(/[\\/]/).at(-1)) {
+      throw new Error(`featured_image in ${relative(root, postPath)} must be a bundle filename`);
+    }
+    const featuredSourcePath = join(postDir, featuredCard.image || card.image || automaticSource || "");
+    if (!(await existing(featuredSourcePath))) {
+      throw new Error(`Featured-card image not found: ${relative(root, featuredSourcePath)}`);
+    }
+    const featuredImage = featuredSourcePath === featurePath
+      ? featureImage
+      : await dataUri(featuredSourcePath);
+    const featuredMode = featuredCard.mode || (extname(featuredSourcePath).toLowerCase() === ".svg" ? "logo" : "image");
+    const featuredSvg = featuredMode === "image" ? `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+        <defs>
+          <linearGradient id="signal-route" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ffb604"/>
+            <stop offset="0.34" stop-color="#ff5db1"/>
+            <stop offset="0.68" stop-color="#7468ff"/>
+            <stop offset="1" stop-color="#23f5ff"/>
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="675" fill="#082952"/>
+        <image href="${featuredImage}" width="1200" height="675" preserveAspectRatio="xMidYMid slice"/>
+        <rect width="1200" height="675" fill="#082952" fill-opacity="0.12"/>
+        <path d="M0 611H318C388 611 400 576 470 576H1200" fill="none" stroke="#082952" stroke-width="18" stroke-opacity="0.48"/>
+        <path d="M0 611H318C388 611 400 576 470 576H1200" fill="none" stroke="url(#signal-route)" stroke-width="8" stroke-linecap="round"/>
+        <rect x="22" y="22" width="1156" height="631" rx="16" fill="none" stroke="#fffefa" stroke-width="2" stroke-opacity="0.55"/>
+      </svg>` : `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+        <defs>
+          <linearGradient id="signal-route" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ffb604"/>
+            <stop offset="0.34" stop-color="#ff5db1"/>
+            <stop offset="0.68" stop-color="#7468ff"/>
+            <stop offset="1" stop-color="#23f5ff"/>
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="675" fill="#082952"/>
+        <circle cx="612" cy="337.5" r="252" fill="#f3f9ff"/>
+        <circle cx="612" cy="337.5" r="288" fill="none" stroke="#4f97e9" stroke-width="2" stroke-opacity="0.28"/>
+        <circle cx="612" cy="337.5" r="327" fill="none" stroke="#4f97e9" stroke-width="1" stroke-opacity="0.18"/>
+
+        <g fill="none" stroke="#4f97e9" stroke-width="3" stroke-linecap="round" stroke-opacity="0.5">
+          <path d="M0 158H178C234 158 244 215 300 215H360"/>
+          <path d="M0 526H172C232 526 246 458 306 458H364"/>
+          <path d="M840 208H915C970 208 982 145 1037 145H1200"/>
+          <path d="M841 468H920C972 468 991 530 1043 530H1200"/>
+          <path d="M222 0V62C222 106 268 112 268 156"/>
+          <path d="M1005 675V615C1005 574 963 565 963 524"/>
+        </g>
+        <g fill="#082952" stroke="#23f5ff" stroke-width="3">
+          <circle cx="178" cy="158" r="9"/><circle cx="300" cy="215" r="9"/>
+          <circle cx="172" cy="526" r="9"/><circle cx="306" cy="458" r="9"/>
+          <circle cx="915" cy="208" r="9"/><circle cx="1037" cy="145" r="9"/>
+          <circle cx="920" cy="468" r="9"/><circle cx="1043" cy="530" r="9"/>
+        </g>
+        <path d="M0 337.5H330C390 337.5 404 302 464 302H756C816 302 830 337.5 890 337.5H1200" fill="none" stroke="url(#signal-route)" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="612" cy="337.5" r="191" fill="#fffefa"/>
+        <image href="${featuredImage}" x="447" y="172.5" width="330" height="330" preserveAspectRatio="xMidYMid meet"/>
+      </svg>`;
+    const featuredPng = await sharp(Buffer.from(featuredSvg))
+      .withMetadata({
+        exif: {
+          IFD0: {
+            ImageDescription: "Generated featured artwork from the configured article bundle image.",
+            Software: "scripts/generate-publication-images.mjs",
+          },
+        },
+      })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+    results.push(await writeGeneratedImage(join(postDir, featuredOutputName), featuredPng));
   }
-  return { outputPath, changed };
+  return results;
 }
 
 async function generateAll() {
   const files = await postFiles();
-  const results = (await Promise.all(files.map(generateCard))).filter(Boolean);
+  const results = (await Promise.all(files.map(generateCard))).filter(Boolean).flat();
   for (const result of results) {
     const status = result.changed ? "generated" : "unchanged";
-    console.log(`[social-card] ${status} ${relative(root, result.outputPath)}`);
+    console.log(`[publication-image] ${status} ${relative(root, result.outputPath)}`);
   }
-  if (results.length === 0) console.log("[social-card] no opted-in posts");
+  if (results.length === 0) console.log("[publication-image] no opted-in posts");
 }
 
 await generateAll();
@@ -238,7 +325,7 @@ if (process.argv.includes("--watch")) {
     try {
       await generateAll();
     } catch (error) {
-      console.error(`[social-card] ${error.stack || error.message}`);
+      console.error(`[publication-image] ${error.stack || error.message}`);
     } finally {
       running = false;
       if (queued) {
@@ -248,7 +335,7 @@ if (process.argv.includes("--watch")) {
     }
   };
   const schedule = (_event, filename = "") => {
-    if (String(filename).endsWith("social-card.png")) return;
+    if (/\/(?:social-card|featured-cover)\.png$/.test(`/${String(filename)}`)) return;
     clearTimeout(timeout);
     timeout = setTimeout(refresh, 120);
   };
@@ -261,6 +348,6 @@ if (process.argv.includes("--watch")) {
   };
   process.on("SIGINT", stop);
   process.on("SIGTERM", stop);
-  console.log("[social-card] watching post, author, and shared identity assets");
+  console.log("[publication-image] watching post, author, and shared identity assets");
   await new Promise(() => {});
 }

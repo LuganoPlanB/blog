@@ -26,7 +26,7 @@ frontend/main.js + frontend/styles.css
 
 The generated Vite files are ignored by Git. Hugo owns their public URLs through `resources.Get`, so `RelPermalink` includes `/blog/` and the final names are content-hashed.
 
-Opted-in post bundles also receive a generated `social-card.png`. A small Node script reads post and author front matter, composes the article title, author identity, and selected bundle image using the Plan ₿ visual tokens, and rasterizes the result to 1200×630 with Sharp. It runs once before every production build and as a watcher alongside Hugo and Vite during `npm run dev`; Hugo emits the final absolute OpenGraph and Twitter metadata.
+Opted-in post bundles receive generated publication images. A small Node script reads post and author front matter, composes a 1200×630 social card from the article title, author identity, and selected bundle image, and can turn that same source image into a distinct 1200×675 homepage cover without repeating article metadata. It runs once before every production build and as a watcher alongside Hugo and Vite during `npm run dev`; Hugo emits the final absolute OpenGraph and Twitter metadata.
 
 ## Content model
 

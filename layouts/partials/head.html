@@ -14,6 +14,12 @@
 {{- $imageType := "" -}}
 {{- $imageWidth := 0 -}}
 {{- $imageHeight := 0 -}}
+{{- with .Resources.GetMatch "social-card.png" -}}
+  {{- $image = .Permalink -}}
+  {{- $imageType = .MediaType.Type -}}
+  {{- $imageWidth = .Width -}}
+  {{- $imageHeight = .Height -}}
+{{- end -}}
 {{- with .Params.cover -}}
   {{- with $.Resources.GetMatch . -}}
     {{- $image = .Permalink -}}

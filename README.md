@@ -6,7 +6,7 @@ A static, multi-author Hugo publication designed as a first-party section of [pl
 
 - **Hugo** owns content, page bundles, templates, authors, tags, feeds, sitemap, metadata, and image processing.
 - **Vite + Tailwind CSS 4** compile `frontend/` into two intermediate files under `assets/generated/`.
-- **The social-card generator** renders opted-in article metadata and bundle media to a crawler-friendly 1200×630 PNG.
+- **The publication-image generator** renders social cards and image-led homepage covers from article bundle media.
 - **Hugo Pipes** minifies and fingerprints those intermediate assets, producing `/blog/`-safe public URLs.
 - **JavaScript is optional enhancement**: the single module stores the light/dark appearance preference.
 
@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-The development site is served at `http://localhost:1313/blog/`. Vite watches the frontend bundle, Hugo watches content and templates, and the social-card generator watches posts, author profiles, and identity assets.
+The development site is served at `http://localhost:1313/blog/`. Vite watches the frontend bundle, Hugo watches content and templates, and the publication-image generator watches posts, author profiles, and identity assets.
 
 Create a production build:
 
@@ -53,7 +53,7 @@ content/
   posts/                Leaf page bundles for articles
 frontend/               Tailwind entry CSS and minimal JavaScript
 layouts/                Hugo templates, partials, and shortcodes
-scripts/                Build-time social-card generation
+scripts/                Build-time publication-image generation
 static/images/          Shared identity and social assets
 test/                   Generated-site contract tests
 .github/workflows/      GitHub Pages deployment
@@ -86,14 +86,20 @@ social_image: social-card.png
 social_image_alt: "Article title, by Display Name"
 social_card:
   image: article-logo.svg
+featured_image: featured-cover.png
+featured_card:
+  image: article-logo.svg
+  mode: logo
 lastmod: 2026-09-15T10:00:00+02:00
 draft: false
 ---
 ```
 
-`summary`, `cover`, `cover_alt`, `cover_caption`, `social_image`, `social_image_alt`, `social_card`, and `lastmod` are optional. When a cover is present, supply meaningful alt text unless the image is purely decorative. Drafts appear locally only when Hugo is run with `--buildDrafts`.
+`summary`, `cover`, `cover_alt`, `cover_caption`, `social_image`, `social_image_alt`, `social_card`, `featured_image`, `featured_card`, and `lastmod` are optional. When a cover is present, supply meaningful alt text unless the image is purely decorative. Drafts appear locally only when Hugo is run with `--buildDrafts`.
 
-To generate a social preview, opt the post in with `social_card.image`, pointing to an image in the same page bundle. `npm run dev` regenerates `social-card.png` as its title, first author, profile, or source image changes. `npm run build` performs the same generation before Hugo runs, so GitHub Actions always publishes a current card. The generated PNG is intentionally committed with the article assets, making it easy to inspect in review; regenerate it directly with `npm run generate:social`.
+To generate a social preview, opt the post in with `social_card.image`, pointing to an image in the same page bundle. `npm run dev` regenerates `social-card.png` as its title, first author, profile, or source image changes. `npm run build` performs the same generation before Hugo runs, so GitHub Actions always publishes a current card. The generated PNG is intentionally committed with the article assets, making it easy to inspect in review; regenerate publication images directly with `npm run generate:images`.
+
+When a post has no real `cover`, `featured_card.image` creates a separate 1200×675 homepage cover from a bundle image or logo. This cover is artwork only: the homepage keeps the title, date, author, summary, and tags in the adjacent text column. `mode: logo` places a mark in the branded node topology; `mode: image` uses full-bleed photography with a restrained signal route. SVG sources default to `logo`, while raster sources default to `image`. If an otherwise unconfigured bundle contains exactly one image, the generator uses it automatically. A real `cover` always wins, and articles with several images require an explicit choice so the build does not guess.
 
 Place article images beside `index.md`. Markdown image syntax works, and the resource-aware figure shortcode adds responsive image processing and a caption:
 

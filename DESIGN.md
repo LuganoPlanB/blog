@@ -101,6 +101,11 @@ components:
     textColor: "{colors.ink}"
     rounded: "{rounded.panel}"
     padding: "clamp(2rem, 5vw, 4rem)"
+  homepage-featured-cover:
+    backgroundColor: "{colors.institutional-navy}"
+    rounded: "{rounded.panel}"
+    height: "675px"
+    width: "1200px"
   author-avatar:
     textColor: "{colors.ink}"
     rounded: "{rounded.circle}"
@@ -197,7 +202,7 @@ The light appearance is white-first and civic-cool; the dark appearance shifts t
 
 The primary shell is centered and capped at 73.75rem (1180px), with 2.5rem total viewport inset behavior expressed as `100% - 2.5rem`. Below 44.99rem, the inset tightens to 1.5rem. The page requires at least a 20rem viewport.
 
-Home begins with a two-column editorial thesis, followed by a two-column featured article and a two-column post grid. The first viewport preserves the Plan ₿ header, thesis, and start of the latest-story path. Archive and taxonomy content reuses the same shell; author and topic directories begin as three columns.
+Home begins with a two-column editorial thesis, followed by a two-column featured article and a two-column post grid. The featured media is authored as a 1200×675 (16:9) plate and leads the latest-story panel without absorbing its metadata. The first viewport preserves the Plan ₿ header, thesis, and start of the latest-story path. Archive and taxonomy content reuses the same shell; author and topic directories begin as three columns.
 
 At 59.99rem, the header wraps navigation onto a second row, thesis and featured layouts collapse to one column, footer columns stack, and directory grids reduce to two columns. At 44.99rem, post, author, and topic grids become single-column; header branding and navigation tighten; the Foundation-site pill is hidden; feature media falls to a 14rem minimum; author layouts stack; and wide prose elements use the full compact viewport inset. Navigation remains horizontally scrollable instead of wrapping each label.
 
@@ -245,7 +250,7 @@ Shared Hugo partials and centralized CSS tokens are the implementation contract.
 ### Cards / Containers
 
 - **Post cards:** Paper surfaces with a hairline border, 0.75rem corners, fluid 1.5rem–2rem padding, and a short four-color line inset 1rem along the top edge. Metadata leads, the headline supplies the card-wide link target, summary copy flexes to keep authorship and topics aligned below.
-- **Featured story:** A clipped 1rem panel with a larger ambient shadow. Its desktop split favors the cover image at 1.15fr to 0.85fr; content padding scales from 2rem to 4rem. It becomes a single column below 59.99rem.
+- **Featured story:** A clipped 1rem panel with a larger ambient shadow. Its desktop split favors the 16:9 cover at 1.15fr to 0.85fr; content padding scales from 2rem to 4rem. Below 59.99rem it becomes a single column with the cover stacked above the text and held at 16:9.
 - **Author card:** A circular 4.5rem portrait or gradient-initial fallback paired with name, role, biography, and links. Directory cards add the shared surface, border, 0.75rem corners, and 1.5rem padding; article footers use the quieter unboxed form.
 - **Topic item:** A surface card with 0.75rem corners, 1.5rem padding, at least 5.5rem height, strong topic name, and muted tabular article count.
 - **Article containers:** Quotes use alternate-ground fill and strong navy text; tables use a surfaced body and alternate-ground uppercase header; code uses the dedicated dark code surface in both themes.
@@ -259,6 +264,17 @@ Shared Hugo partials and centralized CSS tokens are the implementation contract.
 ### Editorial Signature
 
 The short gold–pink–violet–cyan signal line introduces home and article titles, tops post cards, and replaces prose horizontal rules. It is the system's distinctive visual marker and always remains thin, rounded, and spatially contained.
+
+### Homepage Featured Cover
+
+The homepage featured cover is a generated 1200×675 editorial plate made from authentic article-bundle imagery. It establishes the story's visual subject; the adjacent panel body retains the date, title, summary, author, and tags, so the artwork does not duplicate editorial metadata.
+
+- **Logo mode:** Center a mark on a warm-white focus field over Institutional Navy, surrounded by cool-civic node paths. One restrained four-color route crosses the topology; do not add words to the artwork.
+- **Full-bleed photo mode:** Crop the selected raster source to fill the 16:9 frame, add only the restrained navy treatment, inset warm-white keyline, and low signal route needed to make it belong to the system.
+- **Mode default:** SVG sources use logo mode and raster sources use full-bleed photo mode unless `featured_card.mode` explicitly selects a treatment.
+- **Source selection:** A post with exactly one eligible bundle image may use it automatically. With multiple eligible images, require an explicitly configured source image; generation must not guess. Use `featured_card.image` when the homepage treatment needs its own choice.
+- **Precedence:** A real article `cover` remains the homepage's first choice and suppresses generated featured artwork. Without one, use the configured `featured_image`, with `featured-cover.png` as the generated conventional filename.
+- **Responsive treatment:** Preserve the plate at 16:9. It occupies the larger media column on desktop and stacks above the metadata body below 59.99rem.
 
 ### Social Preview Card
 
@@ -276,6 +292,7 @@ The social preview is a fixed 1200×630 editorial split card generated from arti
 
 - **Do** keep the Plan ₿ identity, Blog marker, primary navigation, and appearance switch recognizable at every viewport.
 - **Do** compose new surfaces from the shared semantic tokens and Hugo partial patterns.
+- **Do** keep generated homepage covers image-led and keep date, title, summary, author, and tags in the adjacent HTML content.
 - **Do** keep prose at the 44rem measure with 1.78 leading, expanding only covers, code, tables, and designated wide figures.
 - **Do** preserve 44px interactive targets, visible keyboard focus, semantic current/switch states, the skip link, and reduced-motion behavior.
 - **Do** make dark mode a role-level token substitution and preserve the stored-preference/system-fallback behavior.
@@ -283,6 +300,7 @@ The social preview is a fixed 1200×630 editorial split card generated from arti
 ### Don't:
 
 - **Don't** spread the signal gradient across large surfaces or use it as routine decoration.
+- **Don't** generate a featured cover when a real article cover exists, or infer a source when a bundle contains several eligible images.
 - **Don't** introduce a second display family or decorative editorial font; the shipped hierarchy is Inter-led.
 - **Don't** apply panel shadows to every dark-mode card; ordinary dark surfaces are intentionally flat.
 - **Don't** widen ordinary prose to the institutional shell or collapse covers and data-heavy elements into the text measure.

@@ -1,6 +1,10 @@
 <article class="featured-post">
   {{- $cover := false -}}
   {{- with .Params.cover }}{{ $cover = $.Resources.GetMatch . }}{{ end -}}
+  {{- if not $cover -}}
+    {{- with .Params.featured_image }}{{ $cover = $.Resources.GetMatch . }}{{ end -}}
+  {{- end -}}
+  {{- if not $cover }}{{ $cover = .Resources.GetMatch "featured-cover.png" }}{{ end -}}
   <a class="featured-post__media" href="{{ .RelPermalink }}" tabindex="-1" aria-hidden="true">
     {{- with $cover -}}
       {{- $small := .Resize "720x webp q82" -}}

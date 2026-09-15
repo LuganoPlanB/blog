@@ -15,6 +15,10 @@ social_image_alt: "Introducing Bitcoin Roots, by Jaromil"
 social_card:
   image: bitcoinroots-logo.svg
   label: Bitcoin Roots
+featured_image: featured-cover.png
+featured_card:
+  image: bitcoinroots-logo.svg
+  mode: logo
 draft: false
 ---
 
