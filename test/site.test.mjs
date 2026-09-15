@@ -28,9 +28,8 @@ test("production output includes publishing essentials", () => {
     "sitemap.xml",
     "robots.txt",
     "posts/index.html",
-    "authors/denis-roio/index.html",
     "authors/jaromil/index.html",
-    "tags/privacy/index.html",
+    "tags/bitcoin/index.html",
   ]) {
     assert.equal(existsSync(new URL(path, publicDir)), true, `${path} should exist`);
   }
@@ -70,7 +69,13 @@ test("posts expose authors, tags, social metadata, and responsive media", () => 
   assert.match(article, /\/blog\/tags\/bitcoin\//);
   assert.match(article, /property="?og:type"? content="?article"?/);
   assert.match(article, /property="?article:published_time"?/);
+  assert.match(article, /property="?og:image"? content="?https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"?/);
+  assert.match(article, /property="?og:image:type"? content="?image\/png"?/);
+  assert.match(article, /property="?og:image:width"? content="?1200"?/);
+  assert.match(article, /property="?og:image:height"? content="?630"?/);
+  assert.match(article, /name="?twitter:image"? content="?https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"?/);
   assert.match(article, /<img[^>]+srcset=/);
+  assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/social-card.png", publicDir)), true);
 
   const author = read("authors/jaromil/index.html");
   assert.match(author, /Articles by Jaromil/);
@@ -104,11 +109,10 @@ test("Bitcoin Roots announcement preserves editorial structure and figures", () 
 test("feeds and sitemap contain canonical publication URLs", () => {
   const feed = read("index.xml");
   const sitemap = read("sitemap.xml");
-  assert.equal((feed.match(/<item>/g) ?? []).length, 4);
+  assert.equal((feed.match(/<item>/g) ?? []).length, 1);
   assert.match(feed, /https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\//);
-  assert.match(feed, /https:\/\/plan-b\.foundation\/blog\/2026\/09\/example-documenting-an-open-protocol\//);
   assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/authors\/jaromil\//);
-  assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/tags\/privacy\//);
+  assert.match(sitemap, /https:\/\/plan-b\.foundation\/blog\/tags\/bitcoin\//);
 });
 
 test("published output contains no TailBliss identity", () => {

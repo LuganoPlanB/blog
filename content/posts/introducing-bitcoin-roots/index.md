@@ -10,6 +10,11 @@ tags:
   - node-policy
   - consensus
 summary: "Bitcoin Core based full-node application and reviewable patch that preserves selected operator controls. For and by Knots' orphans."
+social_image: social-card.png
+social_image_alt: "Introducing Bitcoin Roots, by Jaromil"
+social_card:
+  image: bitcoinroots-logo.svg
+  label: Bitcoin Roots
 draft: false
 ---
 

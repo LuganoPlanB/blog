@@ -107,6 +107,11 @@ components:
     size: "4.5rem"
     height: "4.5rem"
     width: "4.5rem"
+  social-preview-card:
+    backgroundColor: "{colors.warm-white}"
+    textColor: "{colors.ink}"
+    height: "630px"
+    width: "1200px"
 ---
 
 # Design System: Plan ₿ Foundation Blog
@@ -254,6 +259,16 @@ Shared Hugo partials and centralized CSS tokens are the implementation contract.
 ### Editorial Signature
 
 The short gold–pink–violet–cyan signal line introduces home and article titles, tops post cards, and replaces prose horizontal rules. It is the system's distinctive visual marker and always remains thin, rounded, and spatially contained.
+
+### Social Preview Card
+
+The social preview is a fixed 1200×630 editorial split card generated from article and author data. A warm-white 824px text field holds the Foundation masthead, restrained signal line, one-to-three-line title, author identity, and publication URL; a 376px cool-civic rail is separated by a quiet civic-blue rule and holds the article's configured bundle image, centered on a warm-white circular field, plus its label.
+
+- **Safe area:** Anchor primary content 68px from the left edge, the masthead 50px from the top, and the publication URL 38px from the bottom. Keep the title clear of the rail boundary and keep rail artwork inside its centered 306px circle.
+- **Type and hierarchy:** Use Inter throughout. Set the title in Ink at 800 weight with tight tracking; scale from 78px for one line to 72px for two lines and 60px for three lines. Author name uses Institutional Navy; role and URL use Slate.
+- **Identity:** Preserve the wide Plan ₿ masthead with the uppercase Blog marker. Use the first credited author's real avatar when supplied, with a navy initial fallback, and use the post's authentic configured bundle image rather than generic preview art.
+- **Signal:** Keep the gradient to one 112×6px rounded line above the title. The right rail may use only quiet civic-blue separators; it does not repeat or enlarge the multicolor signal.
+- **Output:** Export as an sRGB PNG at exactly 1200×630 and retain generator provenance in image metadata.
 
 ## Do's and Don'ts
 

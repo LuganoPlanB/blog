@@ -5,10 +5,12 @@
   "type": "module",
   "description": "Plan ₿ Foundation's Hugo publication.",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail --names assets,hugo \"npm:dev:assets\" \"npm:dev:hugo\"",
+    "dev": "concurrently --kill-others-on-fail --names cards,assets,hugo \"npm:dev:social\" \"npm:dev:assets\" \"npm:dev:hugo\"",
+    "dev:social": "node scripts/generate-social-cards.mjs --watch",
     "dev:assets": "vite build --mode development --watch",
     "dev:hugo": "hugo server --baseURL http://localhost:1313/blog/ --appendPort=false --disableFastRender --navigateToChanged",
-    "build:assets": "vite build --mode production",
+    "generate:social": "node scripts/generate-social-cards.mjs",
+    "build:assets": "npm run generate:social && vite build --mode production",
     "build": "npm run build:assets && hugo --minify --gc --cleanDestinationDir",
     "test:site": "node --test",
     "test": "npm run build && npm run test:site",
@@ -22,7 +24,9 @@
     "@fontsource/noto-sans-symbols-2": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "concurrently": "^10.0.5",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "yaml": "^2.9.1"
   }
 }

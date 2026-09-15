@@ -26,6 +26,8 @@ frontend/main.js + frontend/styles.css
 
 The generated Vite files are ignored by Git. Hugo owns their public URLs through `resources.Get`, so `RelPermalink` includes `/blog/` and the final names are content-hashed.
 
+Opted-in post bundles also receive a generated `social-card.png`. A small Node script reads post and author front matter, composes the article title, author identity, and selected bundle image using the Plan ₿ visual tokens, and rasterizes the result to 1200×630 with Sharp. It runs once before every production build and as a watcher alongside Hugo and Vite during `npm run dev`; Hugo emits the final absolute OpenGraph and Twitter metadata.
+
 ## Content model
 
 Posts are Hugo leaf bundles under `content/posts/<slug>/index.md`; article-specific images live beside the Markdown. `authors` and `tags` are taxonomies. An author term is backed by `content/authors/<slug>/_index.md`, which makes the taxonomy URL both a structured profile and the automatic list of that author's posts.

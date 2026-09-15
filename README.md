@@ -6,6 +6,7 @@ A static, multi-author Hugo publication designed as a first-party section of [pl
 
 - **Hugo** owns content, page bundles, templates, authors, tags, feeds, sitemap, metadata, and image processing.
 - **Vite + Tailwind CSS 4** compile `frontend/` into two intermediate files under `assets/generated/`.
+- **The social-card generator** renders opted-in article metadata and bundle media to a crawler-friendly 1200×630 PNG.
 - **Hugo Pipes** minifies and fingerprints those intermediate assets, producing `/blog/`-safe public URLs.
 - **JavaScript is optional enhancement**: the single module stores the light/dark appearance preference.
 
@@ -26,7 +27,7 @@ npm install
 npm run dev
 ```
 
-The development site is served at `http://localhost:1313/blog/`. Vite watches the frontend bundle while Hugo watches content and templates.
+The development site is served at `http://localhost:1313/blog/`. Vite watches the frontend bundle, Hugo watches content and templates, and the social-card generator watches posts, author profiles, and identity assets.
 
 Create a production build:
 
@@ -52,6 +53,7 @@ content/
   posts/                Leaf page bundles for articles
 frontend/               Tailwind entry CSS and minimal JavaScript
 layouts/                Hugo templates, partials, and shortcodes
+scripts/                Build-time social-card generation
 static/images/          Shared identity and social assets
 test/                   Generated-site contract tests
 .github/workflows/      GitHub Pages deployment
@@ -80,12 +82,18 @@ summary: "A concise description for cards and metadata."
 cover: cover.jpg
 cover_alt: "A useful description of the cover image"
 cover_caption: "Optional visible caption or credit."
+social_image: social-card.png
+social_image_alt: "Article title, by Display Name"
+social_card:
+  image: article-logo.svg
 lastmod: 2026-09-15T10:00:00+02:00
 draft: false
 ---
 ```
 
-`summary`, `cover`, `cover_alt`, `cover_caption`, and `lastmod` are optional. When a cover is present, supply meaningful alt text unless the image is purely decorative. Drafts appear locally only when Hugo is run with `--buildDrafts`.
+`summary`, `cover`, `cover_alt`, `cover_caption`, `social_image`, `social_image_alt`, `social_card`, and `lastmod` are optional. When a cover is present, supply meaningful alt text unless the image is purely decorative. Drafts appear locally only when Hugo is run with `--buildDrafts`.
+
+To generate a social preview, opt the post in with `social_card.image`, pointing to an image in the same page bundle. `npm run dev` regenerates `social-card.png` as its title, first author, profile, or source image changes. `npm run build` performs the same generation before Hugo runs, so GitHub Actions always publishes a current card. The generated PNG is intentionally committed with the article assets, making it easy to inspect in review; regenerate it directly with `npm run generate:social`.
 
 Place article images beside `index.md`. Markdown image syntax works, and the resource-aware figure shortcode adds responsive image processing and a caption:
 
