@@ -1,0 +1,10 @@
+/node_modules/
+/public/
+/resources/_gen/
+/assets/generated/*
+!assets/generated/.gitkeep
+/.hugo_build.lock
+/.DS_Store
+/output/playwright/*
+!output/playwright/.gitkeep
+/.impeccable/review/

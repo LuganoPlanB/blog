@@ -1,0 +1,14 @@
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" -}}
+{{- if not $alt }}{{ errorf "figure shortcode requires alt text: %s" .Position }}{{ end -}}
+{{- $resource := .Page.Resources.GetMatch $src -}}
+<figure{{ with .Get "wide" }} class="wide"{{ end }}>
+  {{- with $resource -}}
+    {{- $small := .Resize "760x webp q82" -}}
+    {{- $large := .Resize "1400x webp q84" -}}
+    <img src="{{ $large.RelPermalink }}" srcset="{{ $small.RelPermalink }} 760w, {{ $large.RelPermalink }} 1400w" sizes="(max-width: 1000px) calc(100vw - 2.5rem), 976px" width="{{ $large.Width }}" height="{{ $large.Height }}" alt="{{ $alt }}" loading="lazy">
+  {{- else -}}
+    <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+  {{- end -}}
+  {{- with .Get "caption" }}<figcaption>{{ . | markdownify }}</figcaption>{{ end -}}
+</figure>

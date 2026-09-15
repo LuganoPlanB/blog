@@ -1,0 +1,12 @@
+{{ define "main" }}
+<header class="list-header">
+  <div class="shell">
+    <div class="signal-line" aria-hidden="true"></div>
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ with .Content }}<div class="list-header__description prose">{{ . }}</div>{{ end }}
+  </div>
+</header>
+{{- with .RegularPages }}
+<section class="section"><div class="shell"><div class="post-grid">{{ range . }}{{ partial "post-card.html" . }}{{ end }}</div></div></section>
+{{- end }}
+{{ end }}

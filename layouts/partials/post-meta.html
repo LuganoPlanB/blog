@@ -1,0 +1,7 @@
+<div class="post-meta">
+  <time datetime="{{ .Date.Format `2006-01-02` }}">{{ .Date.Format site.Params.dateFormat }}</time>
+  <span>{{ .ReadingTime }} min read</span>
+  {{- if and .Lastmod (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }}
+    <span>Updated {{ .Lastmod.Format site.Params.dateFormat }}</span>
+  {{- end }}
+</div>

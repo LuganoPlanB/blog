@@ -1,0 +1,12 @@
+<article class="post-card">
+  {{ partial "post-meta.html" . }}
+  <h2 class="card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+  <p class="post-card__summary">{{ .Summary | plainify | truncate 190 }}</p>
+  <div class="author-line">
+    <span>By</span>
+    {{- range $index, $author := .Params.authors -}}
+      {{- if $index }}, {{ end -}}{{ partial "author-name.html" $author }}
+    {{- end }}
+  </div>
+  {{ partial "tags.html" . }}
+</article>

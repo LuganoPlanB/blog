@@ -1,0 +1,42 @@
+{{ define "main" }}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+<section class="page-intro">
+  <div class="shell page-intro__grid">
+    <div>
+      <div class="signal-line" aria-hidden="true"></div>
+      <h1 class="page-title">Ideas, research, and practical knowledge.</h1>
+    </div>
+    <p class="page-intro__lede">Long-form writing from the Plan ₿ Foundation on Bitcoin, privacy, digital sovereignty, and civic technology.</p>
+  </div>
+</section>
+
+{{- if gt (len $posts) 0 }}
+  {{- $latest := index $posts 0 }}
+<section class="section">
+  <div class="shell">
+    <div class="section-heading">
+      <h2 class="section-title">Latest article</h2>
+      <a class="text-link" href="{{ `posts/` | relURL }}">Browse all articles</a>
+    </div>
+    {{ partial "featured-post.html" $latest }}
+  </div>
+</section>
+
+  {{- if gt (len $posts) 1 }}
+<section class="section">
+  <div class="shell">
+    <div class="section-heading">
+      <h2 class="section-title">More from the publication</h2>
+    </div>
+    <div class="post-grid">
+      {{- range after 1 (first 5 $posts) }}
+        {{ partial "post-card.html" . }}
+      {{- end }}
+    </div>
+  </div>
+</section>
+  {{- end }}
+{{- else }}
+<section class="section"><div class="shell empty-state">No articles have been published yet.</div></section>
+{{- end }}
+{{ end }}

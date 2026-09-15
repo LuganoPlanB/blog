@@ -1,0 +1,16 @@
+{{ define "main" }}
+<header class="list-header">
+  <div class="shell">
+    <div class="signal-line" aria-hidden="true"></div>
+    <h1 class="page-title">{{ .Title }}</h1>
+    <p class="list-header__description">Articles filed under this topic.</p>
+  </div>
+</header>
+<section class="section">
+  <div class="shell">
+    {{- $paginator := .Paginate .Pages -}}
+    <div class="post-grid">{{ range $paginator.Pages }}{{ partial "post-card.html" . }}{{ end }}</div>
+    {{ partial "pagination.html" $paginator }}
+  </div>
+</section>
+{{ end }}

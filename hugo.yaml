@@ -1,0 +1,101 @@
+baseURL: https://plan-b.foundation/blog/
+title: Plan ₿ Foundation Blog
+locale: en-US
+defaultContentLanguage: en
+enableRobotsTXT: true
+enableGitInfo: false
+enableEmoji: false
+canonifyURLs: false
+relativeURLs: false
+summaryLength: 30
+timeZone: Europe/Rome
+
+pagination:
+  pagerSize: 8
+
+permalinks:
+  posts: /:year/:month/:slug/
+
+taxonomies:
+  author: authors
+  tag: tags
+
+outputs:
+  home:
+    - HTML
+    - RSS
+  section:
+    - HTML
+    - RSS
+  taxonomy:
+    - HTML
+    - RSS
+  term:
+    - HTML
+    - RSS
+
+params:
+  description: Long-form writing from the Plan ₿ Foundation on Bitcoin, privacy, digital sovereignty, and civic technology.
+  organisation: Plan ₿ Foundation
+  mainSiteURL: https://plan-b.foundation/
+  github: https://github.com/LuganoPlanB
+  socialImage: images/social-default.svg
+  dateFormat: 2 January 2006
+
+menus:
+  main:
+    - name: Articles
+      pageRef: /posts
+      weight: 10
+    - name: Topics
+      pageRef: /tags
+      weight: 20
+    - name: Authors
+      pageRef: /authors
+      weight: 30
+  footer:
+    - name: Foundation
+      url: https://plan-b.foundation/
+      weight: 10
+    - name: Articles
+      pageRef: /posts
+      weight: 20
+    - name: RSS
+      url: /index.xml
+      weight: 30
+
+markup:
+  goldmark:
+    extensions:
+      footnote: true
+      linkify: true
+      strikethrough: true
+      table: true
+      taskList: true
+      typographer: true
+    parser:
+      attribute:
+        block: true
+        title: true
+      autoHeadingID: true
+      autoHeadingIDType: github
+    renderer:
+      unsafe: false
+  highlight:
+    anchorLineNos: false
+    codeFences: true
+    guessSyntax: false
+    lineNos: false
+    noClasses: false
+    style: github-dark
+    tabWidth: 2
+
+module:
+  hugoVersion:
+    extended: true
+    min: 0.166.0
+
+security:
+  funcs:
+    getenv:
+      - ^HUGO_

@@ -1,0 +1,20 @@
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <div class="site-footer__brand">
+      <img class="logo--light" src="{{ `images/planb-logo-wide-black.svg` | relURL }}" width="236" height="61" alt="Plan ₿ Foundation">
+      <img class="logo--dark" src="{{ `images/planb-logo-wide-white.svg` | relURL }}" width="236" height="50" alt="" aria-hidden="true">
+      <p class="site-footer__summary">Independent thought, practical knowledge, and long-form work from the Plan ₿ Foundation.</p>
+    </div>
+    <nav class="site-footer__nav" aria-label="Footer navigation">
+      {{- range site.Menus.footer }}
+        {{- $href := .URL -}}
+        {{- if and (not (hasPrefix $href "http")) (not (hasPrefix $href "/blog/")) -}}
+          {{- $href = $href | relURL -}}
+        {{- end -}}
+        <a href="{{ $href }}">{{ .Name }}</a>
+      {{- end }}
+      <a href="{{ site.Params.github }}">GitHub</a>
+    </nav>
+    <p class="site-footer__meta">© {{ now.Year }} {{ site.Params.organisation }}. Built as a static, accessible publication with Hugo.</p>
+  </div>
+</footer>

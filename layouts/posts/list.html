@@ -1,0 +1,23 @@
+{{ define "main" }}
+<header class="list-header">
+  <div class="shell">
+    <div class="signal-line" aria-hidden="true"></div>
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ with .Content }}<div class="list-header__description prose">{{ . }}</div>{{ end }}
+  </div>
+</header>
+<section class="section">
+  <div class="shell">
+    {{- $pages := .RegularPages -}}
+    {{- $paginator := .Paginate $pages -}}
+    {{- if $paginator.Pages }}
+    <div class="post-grid">
+      {{ range $paginator.Pages }}{{ partial "post-card.html" . }}{{ end }}
+    </div>
+    {{ partial "pagination.html" $paginator }}
+    {{- else }}
+    <div class="empty-state">No articles have been published yet.</div>
+    {{- end }}
+  </div>
+</section>
+{{ end }}

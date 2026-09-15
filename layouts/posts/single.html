@@ -1,0 +1,43 @@
+{{ define "main" }}
+<article>
+  <header class="article-header">
+    <div class="article-header__inner">
+      <div class="signal-line" aria-hidden="true"></div>
+      <h1 class="article-title">{{ .Title }}</h1>
+      {{ with .Params.summary }}<p class="article-summary">{{ . }}</p>{{ end }}
+      {{ partial "post-meta.html" . }}
+      <div class="author-line">
+        <span>By</span>
+        {{- range $index, $author := .Params.authors -}}
+          {{- if $index }}, {{ end -}}{{ partial "author-name.html" $author }}
+        {{- end }}
+      </div>
+      {{ partial "tags.html" . }}
+    </div>
+  </header>
+
+  {{- with .Params.cover }}
+    {{- with $.Resources.GetMatch . }}
+      {{- $small := .Resize "760x webp q82" -}}
+      {{- $medium := .Resize "1200x webp q84" -}}
+      {{- $large := .Resize "1800x webp q85" -}}
+  <figure class="article-cover">
+    <img src="{{ $medium.RelPermalink }}" srcset="{{ $small.RelPermalink }} 760w, {{ $medium.RelPermalink }} 1200w, {{ $large.RelPermalink }} 1800w" sizes="(max-width: 1000px) calc(100vw - 2.5rem), 976px" width="{{ $large.Width }}" height="{{ $large.Height }}" alt="{{ $.Params.cover_alt | default $.Title }}" fetchpriority="high">
+    {{ with $.Params.cover_caption }}<figcaption>{{ . }}</figcaption>{{ end }}
+  </figure>
+    {{- end }}
+  {{- end }}
+
+  <div class="article-body prose">
+    {{ .Content }}
+  </div>
+
+  <footer class="article-footer">
+    {{- range .Params.authors }}
+      {{- with site.GetPage (printf "/authors/%s" .) }}
+        {{ partial "author-card.html" . }}
+      {{- end }}
+    {{- end }}
+  </footer>
+</article>
+{{ end }}

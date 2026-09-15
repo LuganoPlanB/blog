@@ -1,0 +1,16 @@
+{{ define "main" }}
+<header class="list-header">
+  <div class="shell">
+    <div class="signal-line" aria-hidden="true"></div>
+    <h1 class="page-title">Topics</h1>
+    <p class="list-header__description">Browse the publication by subject.</p>
+  </div>
+</header>
+<section class="section">
+  <div class="shell term-cloud">
+    {{ range .Data.Terms.ByCount }}
+      <a class="term-item" href="{{ .Page.RelPermalink }}"><span>{{ .Page.LinkTitle }}</span><span>{{ .Count }}</span></a>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

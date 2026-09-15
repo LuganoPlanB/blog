@@ -1,0 +1,25 @@
+<article class="featured-post">
+  {{- $cover := false -}}
+  {{- with .Params.cover }}{{ $cover = $.Resources.GetMatch . }}{{ end -}}
+  <a class="featured-post__media" href="{{ .RelPermalink }}" tabindex="-1" aria-hidden="true">
+    {{- with $cover -}}
+      {{- $small := .Resize "720x webp q82" -}}
+      {{- $large := .Resize "1200x webp q84" -}}
+      <img src="{{ $large.RelPermalink }}" srcset="{{ $small.RelPermalink }} 720w, {{ $large.RelPermalink }} 1200w" sizes="(max-width: 960px) 100vw, 58vw" width="{{ $large.Width }}" height="{{ $large.Height }}" alt="">
+    {{- else -}}
+      <img src="{{ `images/cover-placeholder.svg` | relURL }}" width="1200" height="800" alt="">
+    {{- end -}}
+  </a>
+  <div class="featured-post__body">
+    {{ partial "post-meta.html" . }}
+    <h2 class="card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    <p class="featured-post__summary">{{ .Summary | plainify | truncate 240 }}</p>
+    <div class="author-line">
+      <span>By</span>
+      {{- range $index, $author := .Params.authors -}}
+        {{- if $index }}, {{ end -}}{{ partial "author-name.html" $author }}
+      {{- end }}
+    </div>
+    {{ partial "tags.html" . }}
+  </div>
+</article>

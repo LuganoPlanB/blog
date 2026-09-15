@@ -1,0 +1,36 @@
+{{ define "main" }}
+{{- $name := .Params.display_name | default .Params.name | default .Title -}}
+<header class="list-header">
+  <div class="shell author-hero">
+    <div class="author-avatar" aria-hidden="true">
+      {{- with .Params.avatar -}}
+        {{- with $.Resources.GetMatch . }}<img src="{{ .RelPermalink }}" width="192" height="192" alt="">{{ end -}}
+      {{- else -}}{{ substr $name 0 1 | upper }}{{- end -}}
+    </div>
+    <div>
+      <div class="signal-line" aria-hidden="true"></div>
+      <h1 class="page-title">{{ $name }}</h1>
+      {{ with .Params.role }}<p class="list-header__description">{{ . }}{{ with $.Params.organisation }}, {{ . }}{{ end }}</p>{{ end }}
+      {{ with .Params.bio }}<p class="list-header__description">{{ . }}</p>{{ end }}
+      <div class="author-links">
+        {{ with .Params.website }}<a href="{{ . }}">Website</a>{{ end }}
+        {{ with .Params.github }}<a href="{{ . }}">GitHub</a>{{ end }}
+        {{ with .Params.linkedin }}<a href="{{ . }}">LinkedIn</a>{{ end }}
+        {{ with .Params.mastodon }}<a href="{{ . }}">Mastodon</a>{{ end }}
+        {{ with .Params.nostr }}<a href="{{ . }}">Nostr</a>{{ end }}
+        {{ with .Params.email }}<a href="mailto:{{ . }}">Email</a>{{ end }}
+      </div>
+    </div>
+  </div>
+</header>
+<section class="section">
+  <div class="shell">
+    <div class="section-heading"><h2 class="section-title">Articles by {{ $name }}</h2></div>
+    {{- $paginator := .Paginate .Pages -}}
+    {{- if $paginator.Pages }}
+      <div class="post-grid">{{ range $paginator.Pages }}{{ partial "post-card.html" . }}{{ end }}</div>
+      {{ partial "pagination.html" $paginator }}
+    {{- else }}<div class="empty-state">No published articles yet.</div>{{- end }}
+  </div>
+</section>
+{{ end }}

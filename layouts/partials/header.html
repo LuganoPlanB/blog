@@ -1,0 +1,26 @@
+<header class="site-header">
+  <div class="shell site-header__inner">
+    <a class="site-brand" href="{{ site.Params.mainSiteURL }}" aria-label="Plan ₿ Foundation home">
+      <span>
+        <img class="logo--light" src="{{ `images/planb-logo-wide-black.svg` | relURL }}" width="236" height="61" alt="Plan ₿ Foundation">
+        <img class="logo--dark" src="{{ `images/planb-logo-wide-white.svg` | relURL }}" width="236" height="50" alt="" aria-hidden="true">
+      </span>
+      <span class="site-brand__section">Blog</span>
+    </a>
+    <div class="site-nav-wrap">
+      <nav class="site-nav" aria-label="Blog navigation">
+        {{- range site.Menus.main }}
+          {{- $current := or ($.IsMenuCurrent .Menu .) ($.HasMenuCurrent .Menu .) }}
+          <a href="{{ .URL }}"{{ if $current }} aria-current="page"{{ end }}>{{ .Name }}</a>
+        {{- end }}
+      </nav>
+      <div class="site-actions">
+        <a class="button-link" href="{{ site.Params.mainSiteURL }}">Foundation site</a>
+        <button class="theme-toggle" type="button" role="switch" data-theme-toggle aria-label="Use dark appearance" aria-checked="false">
+          <svg class="sun" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+          <svg class="moon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20.5 14.2A8.6 8.6 0 0 1 9.8 3.5 8.7 8.7 0 1 0 20.5 14.2Z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
