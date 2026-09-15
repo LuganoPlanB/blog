@@ -101,5 +101,3 @@ The [source is open](https://github.com/LuganoPlanB/bitcoin-roots). If you run a
 And come and say hello at the [Plan ₿ Forum in Lugano](https://planb.lugano.ch/planb-forum/) on 23 and 24 October 2026. I will be glad to discuss Bitcoin Roots and the other developments taking place here. Early-bird tickets may still be available, so have a look at the [ticket page](https://planb.lugano.ch/planb-forum/#tickets). Bring your questions and disagreements. I look forward to talking in person.
 
 See you in Lugano :^)
-
-Jaromil
