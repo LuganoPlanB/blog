@@ -633,6 +633,7 @@ button {
 .prose a {
   color: var(--pb-accent-strong);
   font-weight: 700;
+  text-decoration-line: underline;
 }
 
 .prose blockquote {

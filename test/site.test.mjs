@@ -98,6 +98,7 @@ test("Bitcoin Roots announcement preserves editorial structure and figures", () 
   assert.ok(stylesheetPath, "the article should link its compiled stylesheet");
   const stylesheet = read(stylesheetPath.replace(/^\/blog\//, ""));
   assert.match(stylesheet, /\.prose blockquote\.pullquote\{[^}]*font-style:italic;[^}]*font-weight:500/);
+  assert.match(stylesheet, /\.prose a\{[^}]*text-decoration-line:underline/);
 });
 
 test("feeds and sitemap contain canonical publication URLs", () => {
