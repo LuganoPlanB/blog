@@ -1,19 +1,34 @@
+{{- $description := .Description | default .Summary | default site.Params.description | plainify | htmlUnescape -}}
+{{- $image := "" -}}
+{{- with .Resources.GetMatch "social-card.png" }}{{ $image = .Permalink }}{{ end -}}
+{{- with .Params.cover -}}
+  {{- with $.Resources.GetMatch . }}{{ $image = .Permalink }}{{ end -}}
+{{- end -}}
+{{- with .Params.social_image -}}
+  {{- with $.Resources.GetMatch . }}{{ $image = .Permalink }}{{ end -}}
+{{- end -}}
 {{- $data := dict
   "@context" "https://schema.org"
   "@type" (cond .IsPage "BlogPosting" "WebSite")
   "name" .Title
   "headline" .Title
   "url" .Permalink
-  "description" (.Description | default .Summary | default site.Params.description | plainify)
+  "description" $description
 -}}
+{{- with $image }}{{ $data = merge $data (dict "image" .) }}{{ end -}}
 {{- if .IsPage -}}
   {{- $authors := slice -}}
   {{- range .Params.authors -}}
     {{- $authorPage := site.GetPage (printf "/authors/%s" .) -}}
     {{- if $authorPage -}}
-      {{- $authors = $authors | append (dict "@type" "Person" "name" ($authorPage.Params.display_name | default $authorPage.Params.name | default $authorPage.Title) "url" $authorPage.Permalink) -}}
+      {{- $author := dict "@type" "Person" "name" ($authorPage.Params.display_name | default $authorPage.Params.name | default $authorPage.Title) "url" $authorPage.Permalink -}}
+      {{- with $authorPage.Params.twitter -}}
+        {{- $author = merge $author (dict "sameAs" (printf "https://x.com/%s" (strings.TrimPrefix "@" .))) -}}
+      {{- end -}}
+      {{- $authors = $authors | append $author -}}
     {{- end -}}
   {{- end -}}
-  {{- $data = merge $data (dict "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "author" $authors "publisher" (dict "@type" "Organization" "name" site.Params.organisation "url" site.Params.mainSiteURL)) -}}
+  {{- $publisher := dict "@type" "Organization" "name" site.Params.organisation "url" site.Params.mainSiteURL "logo" (dict "@type" "ImageObject" "url" (`images/icon-512x512.png` | absURL)) -}}
+  {{- $data = merge $data (dict "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00") "author" $authors "publisher" $publisher "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)) -}}
 {{- end -}}
 <script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>

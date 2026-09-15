@@ -126,6 +126,7 @@ website: https://example.org/
 github: https://github.com/example
 linkedin: https://www.linkedin.com/in/example/
 mastodon: https://example.social/@example
+twitter: example
 nostr: "npub…"
 email: person@example.org
 ---

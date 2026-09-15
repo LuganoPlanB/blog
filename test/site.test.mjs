@@ -27,6 +27,12 @@ test("production output includes publishing essentials", () => {
     "index.xml",
     "sitemap.xml",
     "robots.txt",
+    "favicon.ico",
+    "site.webmanifest",
+    "images/apple-touch-icon.png",
+    "images/favicon-32x32.png",
+    "images/icon-192x192.png",
+    "images/icon-512x512.png",
     "posts/index.html",
     "authors/jaromil/index.html",
     "tags/bitcoin/index.html",
@@ -71,12 +77,21 @@ test("posts expose authors, tags, social metadata, and responsive media", () => 
   assert.match(article, /\/blog\/authors\/jaromil\//);
   assert.match(article, /\/blog\/tags\/bitcoin\//);
   assert.match(article, /property="?og:type"? content="?article"?/);
+  assert.match(article, /property="?og:locale"? content="?en_US"?/);
   assert.match(article, /property="?article:published_time"?/);
+  assert.match(article, /property="?article:author"? content="?https:\/\/plan-b\.foundation\/blog\/authors\/jaromil\/?"?/);
   assert.match(article, /property="?og:image"? content="?https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"?/);
   assert.match(article, /property="?og:image:type"? content="?image\/png"?/);
   assert.match(article, /property="?og:image:width"? content="?1200"?/);
   assert.match(article, /property="?og:image:height"? content="?630"?/);
   assert.match(article, /name="?twitter:image"? content="?https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"?/);
+  assert.match(article, /name="?twitter:site"? content="?@jaromil"?/);
+  assert.match(article, /name="?twitter:creator"? content="?@jaromil"?/);
+  assert.match(article, /rel="?apple-touch-icon"? href="?\/blog\/images\/apple-touch-icon\.png"? sizes="?180x180"?/);
+  assert.match(article, /rel="?manifest"? href="?\/blog\/site\.webmanifest"?/);
+  assert.match(article, /rel="?icon"? href="?\/blog\/favicon\.ico"? sizes="?any"?/);
+  assert.match(article, /rel="?icon"? href="?\/blog\/images\/favicon-32x32\.png"? type="?image\/png"? sizes="?32x32"?/);
+  assert.match(article, /"image":"https:\/\/plan-b\.foundation\/blog\/2026\/09\/introducing-bitcoin-roots\/social-card\.png"/);
   assert.match(article, /<img[^>]+srcset=/);
   assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/social-card.png", publicDir)), true);
   assert.equal(existsSync(new URL("2026/09/introducing-bitcoin-roots/featured-cover.png", publicDir)), true);
@@ -84,6 +99,13 @@ test("posts expose authors, tags, social metadata, and responsive media", () => 
   const author = read("authors/jaromil/index.html");
   assert.match(author, /Articles by Jaromil/);
   assert.match(author, /Introducing Bitcoin Roots/);
+});
+
+test("web app manifest stays scoped to the /blog project site", () => {
+  const manifest = JSON.parse(read("site.webmanifest"));
+  assert.equal(manifest.start_url, "/blog/");
+  assert.equal(manifest.scope, "/blog/");
+  assert.deepEqual(manifest.icons.map(({ sizes }) => sizes), ["192x192", "512x512"]);
 });
 
 test("Bitcoin Roots announcement preserves editorial structure and figures", () => {
